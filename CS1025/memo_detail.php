@@ -6,7 +6,7 @@
     session_start(); 
 
     // ログイン認証
-    if(isset($_SESSION['id'])){
+    if(isset($_SESSION['user_id'])){
 
         // メモIDをGETパラメータから取得
         $id = $_GET['id'];
@@ -16,7 +16,7 @@
         $stmt->execute([$id]);
         $memo = $stmt->fetch();
 
-    }else{
+    } else {
         echo "ログインしていません<br />";
         echo '<a href="../CS1025/index.php">ログイン画面へ</a>';
     }

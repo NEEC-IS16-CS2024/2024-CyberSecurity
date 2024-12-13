@@ -5,7 +5,7 @@
     // セッションを開始
     session_start();
 
-    if(isset($_SESSION['id'])){
+    if(isset($_SESSION['user_id'])){
         // フォームが送信されたときの処理
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $title = trim($_POST['title']); // 入力されたタイトルを取得し、前後の空白を除去
@@ -25,7 +25,7 @@
                 exit;
             }
         }
-    }else{
+    } else {
         echo "ログインしていません<br />";
         echo '<a href="../CS1025/index.php">ログイン画面へ</a>';
     }
