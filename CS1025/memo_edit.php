@@ -50,7 +50,7 @@
         <title>メモ一覧</title>
     </head>
     <body>
-        <?php if(isset($_SESSION['id'])) : ?>
+        <?php if(isset($_SESSION['user_id'])) : ?>
             <form method="post">
                 <label>タイトル: <input type="text" name="title" value="<?= htmlspecialchars($memo['post_title']) ?>"></label><br>
                 <label>内容: <textarea name="content"><?= htmlspecialchars($memo['post_text']) ?></textarea></label><br>

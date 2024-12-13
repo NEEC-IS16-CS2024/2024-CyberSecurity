@@ -39,7 +39,7 @@
         <title>メモ一覧</title>
     </head>
     <body>
-        <?php if(isset($_SESSION['id'])) : ?>
+        <?php if(isset($_SESSION['user_id'])) : ?>
             <h2>新規メモ作成</h2>
             <form method="post">
                 <label>タイトル: <input type="text" name="title" required></label><br>

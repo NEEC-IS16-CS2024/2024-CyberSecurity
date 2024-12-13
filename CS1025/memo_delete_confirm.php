@@ -35,7 +35,7 @@
         <title>メモ一覧</title>
     </head>
     <body>
-        <?php if(isset($_SESSION['id'])) : ?>
+        <?php if(isset($_SESSION['user_id'])) : ?>
             <p>このメモを削除してもよろしいですか？</p>
             <form method="post">
                 <button type="submit">OK</button>

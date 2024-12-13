@@ -30,7 +30,7 @@
         <title>メモ一覧</title>
     </head>
     <body>
-        <?php if(isset($_SESSION['id'])) : ?>
+        <?php if(isset($_SESSION['user_id'])) : ?>
             <h2><?= htmlspecialchars($memo['post_title']) ?></h2>
             <p>作成日: <?= htmlspecialchars($memo['created_at']) ?></p>
             <p><?= nl2br(htmlspecialchars($memo['post_text'])) ?></p>
