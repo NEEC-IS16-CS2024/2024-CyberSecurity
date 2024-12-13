@@ -21,3 +21,5 @@
 <a href="memo_edit.php?id=<?= $memo['post_id'] ?>">編集</a>
 <a href="memo_delete_confirm.php?id=<?= $memo['post_id'] ?>">削除</a>
 <a href="home.php">ホームへ戻る</a>
+
+hello
