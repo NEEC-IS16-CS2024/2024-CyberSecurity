@@ -19,9 +19,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($existingUser) {
             $error = "このユーザー名は既に使用されています。";
         } else {
+            //パスワードをハッシュ化
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
             // 新しいユーザーをデータベースに追加
             $stmt = $pdo->prepare("INSERT INTO users (nickname, password) VALUES (?, ?)");
-            $stmt->execute([$nickname, $password]);
+            $stmt->execute([$nickname, $hashed_password]);
 
             // 登録完了後にログイン画面にリダイレクト
             header("Location: index.php");

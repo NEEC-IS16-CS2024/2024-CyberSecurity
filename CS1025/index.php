@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (strlen($nickname) <= 20 && strlen($password) <= 20) {
 
         // ユーザーが存在し、パスワードが一致する場合
-        if ($user && $user['password'] === $password) {
+        if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['user_id']; // セッションにユーザーIDを保存
             header("Location: home.php"); // ホーム画面にリダイレクト
             exit;
