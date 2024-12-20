@@ -5,45 +5,60 @@ require 'config.php';
 // セッションを開始
 session_start();
 
-// フォームが送信されたときの処理
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+// フォームが送信された場合
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    //入力されたニックネーム、パスワードを取得
-    $nickname = $_POST['nickname'];
-    $password = $_POST['password'];
+    // 入力されたニックネームとパスワードを取得
+    $nickname = trim($_POST['nickname']);
+    $password = trim($_POST['password']);
 
-    // 入力されたニックネームに該当するユーザーをデータベースから取得
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE nickname = ?");
-    $stmt->execute([$nickname]);
-    $user = $stmt->fetch();
-
-    //文字数チェック
-    if (strlen($nickname) <= 20 && strlen($password) <= 20) {
+    // 入力内容の長さチェック
+    if (strlen($nickname) > 20 || strlen($password) > 20) {
+        $error = "ユーザー名またはパスワードは20文字以下である必要があります。";
+    } else {
+        // データベースから入力されたニックネームのユーザー情報を取得
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE nickname = ?");
+        $stmt->execute([$nickname]);
+        $user = $stmt->fetch();
 
         // ユーザーが存在し、パスワードが一致する場合
         if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['user_id']; // セッションにユーザーIDを保存
-            header("Location: home.php"); // ホーム画面にリダイレクト
+            // セッションにユーザーIDを保存
+            $_SESSION['user_id'] = $user['user_id'];
+
+            // ホーム画面にリダイレクト
+            header("Location: home.php");
             exit;
         } else {
-            // ログイン失敗時のエラーメッセージ
+            // 認証失敗時のエラーメッセージ
             $error = "ユーザー名またはパスワードが間違っています。";
         }
-
-    } else {
-        $error = "ユーザー名またはパスワードは20文字以下である必要があります。";
     }
 }
 ?>
 
 <!-- ログインフォーム -->
-<form method="post">
-    <label>ユーザー名: <input type="text" name="nickname" require maxlength="20"></label><br>
-    <label>パスワード: <input type="password" name="password" require maxlength="20"></label><br>
-    <button type="submit">ログイン</button><br>
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ログイン</title>
+</head>
+
+<body>
+    <h2>ログイン</h2>
+    <form method="post">
+        <label>ユーザー名: <input type="text" name="nickname" required maxlength="20"></label><br>
+        <label>パスワード: <input type="password" name="password" required maxlength="20"></label><br>
+        <button type="submit">ログイン</button>
+    </form>
     <p><a href="register.php">新規登録はこちら</a></p>
 
-    <!-- エラーメッセージが存在する場合 -->
-    <?php if (isset($error))
-        echo "<p>$error</p>"; ?>
-</form>
+    <!-- エラーメッセージが存在する場合に表示 -->
+    <?php if (isset($error)): ?>
+        <p style="color: red;"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
+    <?php endif; ?>
+</body>
+
+</html>
