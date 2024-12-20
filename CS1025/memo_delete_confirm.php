@@ -5,25 +5,32 @@ require 'config.php';
 // セッションを開始
 session_start();
 
-// ログイン認証
-if (isset($_SESSION['user_id'])) {
-
-    // メモIDをGETパラメータから取得
-    $id = $_GET['id'];
-
-    // フォームが送信されたとき（削除実行時）の処理
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-        //該当メモをデータベースから削除
-        $stmt = $pdo->prepare("DELETE FROM posts WHERE post_id = ?");
-        $stmt->execute([$id]);
-
-        header("Location: home.php"); // ホーム画面にリダイレクト
-        exit;
-    }
-} else {
+// ログインチェック
+if (!isset($_SESSION['user_id'])) {
     echo "ログインしていません<br />";
     echo '<a href="../CS1025/index.php">ログイン画面へ</a>';
+    exit;
+}
+
+// メモIDをGETパラメータから取得
+$id = $_GET['id'] ?? null;
+
+// メモIDが指定されていない場合の処理
+if (!$id) {
+    echo "メモIDが指定されていません。<br />";
+    echo '<a href="home.php">ホームへ戻る</a>';
+    exit;
+}
+
+// フォームが送信されたとき（削除実行時）の処理
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // 該当メモをデータベースから削除
+    $stmt = $pdo->prepare("DELETE FROM posts WHERE post_id = ?");
+    $stmt->execute([$id]);
+
+    // ホーム画面にリダイレクト
+    header("Location: home.php");
+    exit;
 }
 ?>
 
@@ -33,17 +40,15 @@ if (isset($_SESSION['user_id'])) {
 
 <head>
     <meta charset="UTF-8">
-    <title>メモ一覧</title>
+    <title>削除確認</title>
 </head>
 
 <body>
-    <?php if (isset($_SESSION['user_id'])): ?>
-        <p>このメモを削除してもよろしいですか？</p>
-        <form method="post">
-            <button type="submit">OK</button>
-            <a href="memo_detail.php?id=<?= $id ?>">キャンセル</a>
-        </form>
-    <?php endif ?>
+    <p>このメモを削除してもよろしいですか？</p>
+    <form method="post">
+        <button type="submit">OK</button>
+        <a href="memo_detail.php?id=<?= htmlspecialchars($id, ENT_QUOTES, 'UTF-8') ?>">キャンセル</a>
+    </form>
 </body>
 
 </html>
